@@ -54,7 +54,7 @@ In WebApiConfig.cs, added JSON Serializer code
             
 Also added MetadataScriptWriter class to save metadata as file
 
-public static class MetadataScriptWriter
+    public static class MetadataScriptWriter
     {
         public static void Write()
         {
