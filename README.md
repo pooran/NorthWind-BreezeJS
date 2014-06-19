@@ -1,8 +1,7 @@
 NorthWind-BreezeJS
 ==================
 
-This is the demo code built for BDotNet https://www.facebook.com/groups/BDotNet/ event WebEd http://webed.azurewebs
-ites.net/ or https://www.facebook.com/groups/BDotNet/permalink/785436024830188/
+This is the demo code built for BDotNet https://www.facebook.com/groups/BDotNet/ event WebEd http://webed.azurewebsites.net/ or https://www.facebook.com/groups/BDotNet/permalink/785436024830188/
 
 I am using NorthWind db backup from http://northwinddatabase.codeplex.com/releases/view/71634
 
