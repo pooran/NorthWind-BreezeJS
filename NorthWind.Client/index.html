@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="span12">
+        <label for="customerList">Customers:</label>
+        <select id="customerList" 
+                data-bind="options: customers , 
+    optionsText: 'ContactName', value :currentCustomer"></select>        
+        <form action="#" method="post">
+            <fieldset data-bind="with: currentCustomer">
+                <legend>Current Customer: </legend>
+                <label for="customerName">Name:</label>
+                <input id="customerName" data-bind="value:ContactName" />
+                <label for="customerPhone">Name:</label>
+                <input id="customerPhone" data-bind="value:Phone" />
+                <button id="saveButton" data-bind="click: $parent.saveChanges"> Save Changes </button>
+            </fieldset>
+        </form>
+
+    </div>
+    <script src="Scripts/jquery-1.9.0.min.js"></script>
+    <script src="Scripts/knockout-3.1.0.debug.js"></script>
+    <script src="Scripts/q.min.js"></script>
+    <script src="Scripts/breeze.min.js"></script>
+     <script type="text/javascript">
+         function loadjsfile(filename) {
+             var fileref = document.createElement('script')
+             fileref.setAttribute("type", "text/javascript")
+             fileref.setAttribute("src", filename)             
+         }
+         if (localStorage.getItem("m") == null)
+         {
+             loadjsfile("http://localhost/NorthWind/m.js");
+             localStorage.setItem("m", test);
+             test = localStorage.getItem("m")
+         }
+         else {
+             test = localStorage.getItem("m");
+         }
+         var serviceName = 'http://localhost/NorthWind/breeze/NorthWind'; // your service root here
+         var manager = new breeze.EntityManager();
+         function createEntityManager() {
+
+             // define the Breeze `DataService` for this app
+             var dataService = new breeze.DataService({
+                 serviceName: serviceName,
+                 hasServerMetadata: false  // don't ask the server for metadata
+             });
+
+             // create the metadataStore
+             var metadataStore = new breeze.MetadataStore({
+             });
+
+             // initialize it from the application's metadata variable
+             metadataStore.importMetadata(test);
+
+
+             // create a new EntityManager that uses this metadataStore
+             return new breeze.EntityManager({
+                 dataService: dataService,
+                 metadataStore: metadataStore
+             });
+         }
+        var my = my || {}; //root for my stuff
+        $(function () {
+            my.em = createEntityManager()
+            my.vm = function() {
+                var customers = ko.observableArray([]),
+                    currentCustomer = ko.observable(),
+                    load = function () {
+                        var query = breeze.EntityQuery.from("Customers");
+                        return my.em.executeQuery(query)
+                            .then(querySucceeded)
+                            .fail(queryFailed);
+                        function querySucceeded(data) {
+                            my.vm.customers(data.results);
+                        };
+                        function queryFailed(error) {
+                            alert("Query failed " + error.message);
+                        }
+                    },
+                    saveChanges = function () {
+                        my.em.saveChanges().fail(function (error) { alert("Failed to save to server - " + error.message); }
+                            )
+                    };
+                return  {
+                    customers:customers,
+                    currentCustomer: currentCustomer,
+                    load: load,
+                    saveChanges : saveChanges
+                };
+            }();
+            my.vm.load();
+            ko.applyBindings(my.vm);
+        });
+    </script>
+</body>
+</html>
